@@ -8,10 +8,12 @@ export default function Cards({cardClick, score}) {
         fetch("https://pokeapi.co/api/v2/pokemon?limit=151")
         .then((response) => response.json())
         .then((data) => {
-            let newPokeSet = new Set();
-            while (newPokeSet.size < 5) {
+            let newPokeSet = [];
+            while (newPokeSet.length < 5) {
                 let randomId = Math.floor(Math.random() * 151);
-                newPokeSet.add(data.results[randomId]);
+                let samePokemon = newPokeSet.some((pokemon) => randomId === pokemon.id - 1);
+                console.log(samePokemon)
+                !samePokemon && newPokeSet.push({name: data.results[randomId].name, id: randomId + 1});
             }
             setPokeData([...newPokeSet]);
         })
@@ -26,7 +28,13 @@ export default function Cards({cardClick, score}) {
     return(
         <div id="cards">
             {pokeData.map((pokemon) => {
-                return <p onClick={cardClick} className="cards" key={pokemon.name}>{pokemon.name}</p>
+                return (
+                    <div className="card" key={pokemon.name}>
+                        <p onClick={cardClick} className="cards">{pokemon.name}-{pokemon.id}</p>
+                        {console.log(pokemon)}
+                        <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} alt={pokemon.name} />
+                    </div>
+            )
             })}
         </div>
     )

@@ -4,7 +4,6 @@ import Scoreboard from './Scoreboard'
 import Cards from './Cards'
 
 function App() {
-  const [count, setCount] = useState(0);
   const [score, setScore] = useState({currentScore: 0, bestScore: 0, clickedCards: new Set()});
 
   function cardClick(event) {
