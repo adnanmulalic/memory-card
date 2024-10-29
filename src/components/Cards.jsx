@@ -1,37 +1,60 @@
 import { useEffect, useState } from "react"
 import "../styles/Cards.css"
 
-export default function Cards({cardClick, score}) {
-    const [pokeData, setPokeData] = useState([]);
+export default function Cards({cardClick}) {
+    const [pokemonData, setPokemonData] = useState([]);
+    const [pokemonIds, setPokemonIds] = useState([]);
 
+    function createPokeIds() {
+        let idSet = new Set();
+        while (idSet.size < 5) {
+            let randomId = Math.floor(Math.random() * (152 - 1) + 1);
+            idSet.add(randomId);
+        }
+        console.log(idSet)
+        setPokemonIds([...idSet]);
+    }
+
+    function fetchPokemonObject(url) {
+        return fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+            return {name: data.name, id: data.id, type: data.types[0].type.name};
+        })
+    }
+    
     useEffect(() => {
         fetch("https://pokeapi.co/api/v2/pokemon?limit=151")
         .then((response) => response.json())
-        .then((data) => {
-            let newPokeSet = [];
-            while (newPokeSet.length < 5) {
-                let randomId = Math.floor(Math.random() * 151);
-                let samePokemon = newPokeSet.some((pokemon) => randomId === pokemon.id - 1);
-                console.log(samePokemon)
-                !samePokemon && newPokeSet.push({name: data.results[randomId].name, id: randomId + 1});
-            }
-            setPokeData([...newPokeSet]);
+        .then((data) => { // returns array of 151 pokemons with names and url to their data
+            Promise.all(data.results.map((result) => // fetch and resolve all 151 pokemon and return array of pokemon objects
+            fetch(result.url) // can be replaced with function fetchPokemonObject(url) for shorter code
+            .then((response) => response.json())
+            .then((data) => {
+            return {name: data.name, id: data.id, type: data.types[0].type.name};
+            })
+        ))
+        .then((arrOfResolvedPokemons) => {
+            createPokeIds();
+            setPokemonData(arrOfResolvedPokemons);
+            })
         })
-    }, [score])
+    }, [])
 
-    function displayPokemon(arr) {
-        arr.forEach(pokemon => {
-            return pokemon.name;
-        });
+    function multipleFunctions(event) {
+        cardClick(event);
+        createPokeIds();
     }
+
+    
 
     return(
         <div id="cards">
-            {pokeData.map((pokemon) => {
+            
+            {pokemonData.filter((pokemon) => pokemonIds.includes(pokemon.id)).map((pokemon) => {
                 return (
-                    <div className="card" key={pokemon.name}>
-                        <p onClick={cardClick} className="cards">{pokemon.name}-{pokemon.id}</p>
-                        {console.log(pokemon)}
+                    <div onClick={multipleFunctions} className={`${"card"} ${pokemon.type}`} key={pokemon.id} id={pokemon.id}>
+                        <p>{pokemon.name}</p>
                         <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} alt={pokemon.name} />
                     </div>
             )
