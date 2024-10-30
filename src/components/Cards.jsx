@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import "../styles/Cards.css"
 
+
 export default function Cards({cardClick}) {
     const [pokemonData, setPokemonData] = useState([]);
     const [pokemonIds, setPokemonIds] = useState([]);
@@ -11,8 +12,11 @@ export default function Cards({cardClick}) {
             let randomId = Math.floor(Math.random() * (152 - 1) + 1);
             idSet.add(randomId);
         }
-        console.log(idSet)
         setPokemonIds([...idSet]);
+    }
+
+    function getImageUrl(id) { // https://vite.dev/guide/assets.html#new-url-url-import-meta-url
+        return new URL(`../assets/gen-i/${id}.svg`, import.meta.url).href
     }
 
     function fetchPokemonObject(url) {
@@ -55,10 +59,11 @@ export default function Cards({cardClick}) {
                 return (
                     <div onClick={multipleFunctions} className={`${"card"} ${pokemon.type}`} key={pokemon.id} id={pokemon.id}>
                         <p>{pokemon.name}</p>
-                        <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} alt={pokemon.name} />
+                        <img src={getImageUrl(pokemon.id)} alt={pokemon.name} /> {/* src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} */}
                     </div>
             )
             })}
         </div>
     )
 }
+

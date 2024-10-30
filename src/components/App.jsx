@@ -13,7 +13,6 @@ function App() {
 
     if (score.clickedCards.has(targetId)) {
       setScore({currentScore: 0, bestScore: score.currentScore > score.bestScore ? score.currentScore : score.bestScore, clickedCards: new Set()});
-      console.log("Card exists");
     } else {
       setScore({...score, currentScore: score.currentScore + 1, clickedCards: score.clickedCards.add(targetId)});
     }
@@ -21,7 +20,7 @@ function App() {
 
   return (
     <div>
-      <h1>Memory card game</h1>
+      <h1>Gen I Pokemon Memory Card Game</h1>
       <Scoreboard score={score} />
       <Cards cardClick={cardClick} />
     </div>
