@@ -6,7 +6,7 @@ export default function Cards({cardClick}) {
     const [pokemonData, setPokemonData] = useState([]);
     const [pokemonIds, setPokemonIds] = useState([]);
 
-    function createPokeIds() {
+    function createPokeIds() { // creates array of 5 numbers between 1 and 151
         let idSet = new Set();
         while (idSet.size < 5) {
             let randomId = Math.floor(Math.random() * (152 - 1) + 1);
@@ -50,16 +50,13 @@ export default function Cards({cardClick}) {
         createPokeIds();
     }
 
-    
-
     return(
         <div id="cards">
-            
             {pokemonData.filter((pokemon) => pokemonIds.includes(pokemon.id)).map((pokemon) => {
                 return (
                     <div onClick={multipleFunctions} className={`${"card"} ${pokemon.type}`} key={pokemon.id} id={pokemon.id}>
                         <p>{pokemon.name}</p>
-                        <img src={getImageUrl(pokemon.id)} alt={pokemon.name} /> {/* src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`} */}
+                        <img src={getImageUrl(pokemon.id)} alt={pokemon.name} />
                     </div>
             )
             })}
